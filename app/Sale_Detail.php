@@ -66,7 +66,22 @@ class Sale_Detail extends Model
             
             $key++;
         }
-        echo $qtystr;
+        //echo $qtystr;
         return $qtystr;
+    }
+
+    public static function phpformatnumber($num){
+      $dc=0;
+      $p=strpos((float)$num,'.');
+      if($p>0){
+        $fp=substr($num,$p,strlen($num)-$p);
+        $dc=strlen((float)$fp)-2;
+        
+      }
+      if($dc>2){
+        $dc=2;
+      }
+      
+      return number_format($num,$dc,'.',',');
     }
 }

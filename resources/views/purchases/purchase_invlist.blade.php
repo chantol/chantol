@@ -65,7 +65,7 @@
 	    										
 	    										 {{-- <a href="javascript:window.print();" class="btn btn-default btn-xs btnprint" title="print"><i class="fa fa-print"></i></a> --}}
 	    										
-	    										<a href="#" class="btn btn-danger btn-xs btndelinv" data-id="{{ $inv->id }}"><i class="fa fa-minus"></i></a>
+	    										<a href="#" class="btn btn-danger btn-xs btndelinv" data-id="{{ $inv->id }}"><i class="fa fa-trash"></i></a>
 	    										
 	    									</td>
 	    									

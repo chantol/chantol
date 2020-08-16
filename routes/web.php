@@ -79,12 +79,15 @@ Route::group(['middleware'=>['authen','roles'],'roles'=>['admin']],function(){
 		Route::post('/delpaid','PurchaseController@delpaid')->name('delpaid');
 		Route::get('/printallinv','PurchaseController@printallinv')->name('printallinv');
 		Route::get('/accountpay','PurchaseController@accountpay')->name('accountpay');
-		Route::get('/invoicelist/invoicelistsearchforpay','SaleController@invoicelistsearchforpay')->name('invoicelistsearchforpay');
+		Route::get('/invoicelist/invoicelistsearchforpay','PurchaseController@invoicelistsearchforpay')->name('invoicelistsearchforpay');
 		
 	});
 
 	//route sale
 	Route::group(['prefix'=>'sale'],function(){
+		Route::get('/getbuyinvtotal','SaleController@getbuyinvtotal')->name('getbuyinvtotal');
+		Route::get('/getbuyinv','SaleController@getbuyinv')->name('getbuyinv');
+		Route::get('/getcostfrombuyinv','SaleController@getcostfrombuyinv')->name('getcostfrombuyinv');
 		Route::get('/order','SaleController@index')->name('saleout');
 		Route::get('/invoice/search/barcode','SaleController@SearchItemBarcode')->name('sale.barcode.search');
 		Route::get('/invoice/search/product','SaleController@product_search')->name('saleproductsearch');
@@ -120,7 +123,7 @@ Route::group(['middleware'=>['authen','roles'],'roles'=>['admin']],function(){
 		Route::get('/closesaleinvoice','SaleController@closesaleinvoice')->name('closesaleinvoice');
 		Route::get('/closesaleinvoicepayment','SaleController@closesaleinvoicepayment')->name('closesaleinvoicepayment');
 		Route::get('/closesaleinvoicereport','SaleController@closesaleinvoicereport')->name('closesaleinvoicereport');
-
+		Route::get('/searchcustomermodal','SaleController@searchcustomermodal')->name('searchcustomermodal');
 		Route::get('/searchcustomer','SaleController@searchcustomer')->name('searchcustomer');
 		Route::get('/searchcustomeroldlist','SaleController@searchcustomeroldlist')->name('searchcustomeroldlist');
 		Route::get('/searchcustomercloselist','SaleController@searchcustomercloselist')->name('searchcustomercloselist');
@@ -140,6 +143,8 @@ Route::group(['middleware'=>['authen','roles'],'roles'=>['admin']],function(){
 		Route::get('/accountreceive','SaleController@accountreceive')->name('accountreceive');
 		Route::get('/readcustomerdebtname','SaleController@readcustomerdebtname')->name('readcustomerdebtname');
 		Route::get('/getcusvalue','SaleController@getcusvalue')->name('getcusvalue');
+		Route::get('/printallcustomerdebtinvoice','SaleController@printallcustomerdebtinvoice')->name('printallcustomerdebtinvoice');
+		
 	});
 	Route::group(['prefix'=>'closelist'],function(){
 		Route::get('/closelistreport','CloseListController@closereport')->name('closelists.showreport');
@@ -151,6 +156,9 @@ Route::group(['middleware'=>['authen','roles'],'roles'=>['admin']],function(){
 		Route::get('/info','StockController@index')->name('stockinfo');
 		Route::get('/search/stock','StockController@search')->name('searchstock');
 		Route::get('/search/mainstock','StockController@searchmain')->name('searchmainstock');
+		Route::get('/mainstock/print','StockController@printmainstock')->name('printmainstock');
+		Route::get('/search/mainstock2','StockController@searchmain2')->name('searchmainstock2');
+		Route::get('/mainstock2/print','StockController@printmainstock2')->name('printmainstock2');
 		Route::get('/history','StockController@stockhistory')->name('stockhistory');
 		Route::get('/showstockproccess','StockController@showstockproccess')->name('showstockprocess');
 		Route::post('/removestockprocess','StockController@removestockprocess')->name('removestockprocess');

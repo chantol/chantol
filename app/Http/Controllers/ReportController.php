@@ -9,7 +9,8 @@ use App\Supplier;
 use App\Delivery;
 use App\Law;
 use App\Product;
-use Excel;
+use App\Exports\SaleReportExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -115,86 +116,20 @@ class ReportController extends Controller
        
        
         if($request->g1=='sales.invdate'){
-            return view('reports.productsaleprint',compact('itemsales','supid'));
+            return view('reports.productsaleprint',compact('itemsales','supid','d1','d2'));
         }elseif($request->g1=='sale_details.product_id'){
-            return view('reports.productsale_byitemprint',compact('itemsales','supid'));
+            return view('reports.productsale_byitemprint',compact('itemsales','supid','d1','d2'));
         }elseif($request->g1=='products.category_id'){
-            return view('reports.productsale_bycatprint',compact('itemsales','supid'));
+            return view('reports.productsale_bycatprint',compact('itemsales','supid','d1','d2'));
         
     }
 }
-
-    public function exportsalereport(Request $request)
+     public function exportsalereport(Request $request)
     {
-        $supid=0;
-        $d1=date('Y-m-d',strtotime($request->d1));
-        $d2=date('Y-m-d',strtotime($request->d2));
-        // if($request->g1=='products.category_id'){
-        //      $itemsales=Sale_Detail::join('sales','sale_details.sale_id','=','sales.id')->join('products','sale_details.product_id','=','products.id')
-        //             ->select(DB::raw('sum(qtyunit) as sumqty,sum(amount-(amount*invdiscount)/100) as sumamount,avg(unitprice) as avgprice,sum(focunit) as focqty,sum(costex * (qtyunit+focunit)) as tcost,sale_details.product_id,sales.invdate,sale_details.cur,products.category_id'))
-        //             ->whereBetween(DB::raw('DATE(sales.invdate)'), array($d1, $d2))
-        //             ->groupBy('products.category_id')
-        //             ->groupBy('sale_details.product_id')
-        //             ->groupBy('sales.invdate')
-        //             ->groupBy('sale_details.cur')
-        //             ->get()->toArray();
-        // }else{
-        //      $itemsales=Sale_Detail::join('sales','sale_details.sale_id','=','sales.id')
-        //             ->select(DB::raw('sum(qtyunit) as sumqty,sum(amount-(amount*invdiscount)/100) as sumamount,avg(unitprice) as avgprice,sum(focunit) as focqty,sum(costex * (qtyunit+focunit)) as tcost,sale_details.product_id,sales.invdate,sale_details.cur'))
-        //             ->whereBetween(DB::raw('DATE(sales.invdate)'), array($d1, $d2))
-        //             ->groupBy($request->g1)
-        //             ->groupBy($request->g2)
-        //             ->groupBy('sale_details.cur')
-        //             ->get()->toArray();
-        // }
-       $itemsales=DB::table('sale_details')->join('sales','sale_details.sale_id','=','sales.id')
-                    ->select(DB::raw('sum(qtyunit) as sumqty,sum(amount-(amount*invdiscount)/100) as sumamount,avg(unitprice) as avgprice,sum(focunit) as focqty,sum(costex * (qtyunit+focunit)) as tcost,sale_details.product_id,sales.invdate,sale_details.cur'))
-                    ->whereBetween(DB::raw('DATE(sales.invdate)'), array($d1, $d2))
-                    ->groupBy($request->g1)
-                    ->groupBy($request->g2)
-                    ->groupBy('sale_details.cur')
-                    ->get()->toArray();
-       $report_data[]=array('Qty','Price','Amount','FOCunit','Tcost');
-       foreach ($itemsales as $key => $itemsale) {
-           $report_data[]=array(
-            'Qty'       => $itemsale->sumqty,
-            'Price'     => $itemsale->avgprice,
-            'Amount'    => $itemsale->sumamount,
-            'FOCunit'   => $itemsale->focqty,
-            'Tcost'     => $itemsale->tcost
-
-           );
-       }
-        Excel::create('Report Date',function($excel) use($report_data){
-            $excel->setTitle('Report Data');
-            $excel->sheet('Report Date',function($sheet) use($report_data){
-                $sheet->fromArray($report_data,null,'A1',false,false);
-            });
-        })->download('xlsx');
+        //return($request->all());
+      return Excel::download(new SaleReportExport($request), 'salereport.xlsx');
     }
-
-
-     function excel()
-    {
-     $customer_data = DB::table('suppliers')->get()->toArray();
-     $customer_array[] = array('Name', 'Sex', 'Tel');
-     foreach($customer_data as $customer)
-     {
-      $customer_array[] = array(
-       'Name'  => $customer->name,
-       'Sex'   => $customer->sex,
-       'Tel'    => $customer->tel
-      
-      );
-     }
-     Excel::create('Customer Data', function($excel) use ($customer_array){
-      $excel->setTitle('Customer Data');
-      $excel->sheet('Customer Data', function($sheet) use ($customer_array){
-       $sheet->fromArray($customer_array, null, 'A1', false, false);
-      });
-     })->download('xlsx');
-    }
-
+    
 
      public function getitemsaleforeq(Request $request)
     {

@@ -69,7 +69,7 @@ class StockController extends Controller
                     ->whereNull('deleted_at')
         						->groupBy('cur')->get();
 		}else{
-			$stocks=Product::all();
+			$stocks=Product::orderBy('category_id')->get();
 			$totalstock=DB::table('products')->select(DB::raw('sum(stock * costprice) as tstock,cur'))
                         ->whereNull('deleted_at')
         								->groupBy('cur')->get();
@@ -78,6 +78,69 @@ class StockController extends Controller
         return view('stocks.stocklist',compact('stocks','totalstock'));
 
 	}
+  public function printmainstock(Request $request)
+  {
+    $stockdate=$request->dd;
+    if($request->searchby==0){
+      $stocks=Product::where('category_id',$request->filter)->get();
+      $totalstock=DB::table('products')->select(DB::raw('sum(stock * costprice) as tstock,cur'))
+                    ->where('category_id',$request->filter)
+                    ->whereNull('deleted_at')
+                    ->groupBy('cur')->get();
+    }else if($request->searchby==1){
+      $stocks=Product::where('brand_id',$request->filter)->get();
+      $totalstock=DB::table('products')->select(DB::raw('sum(stock * costprice) as tstock,cur'))
+                    ->where('brand_id',$request->filter)
+                    ->whereNull('deleted_at')
+                    ->groupBy('cur')->get();
+    }else if($request->searchby==2){
+      $stocks=Product::where('id',$request->filter)->get();
+      $totalstock=DB::table('products')->select(DB::raw('sum(stock * costprice) as tstock,cur'))
+                    ->where('id',$request->filter)
+                    ->whereNull('deleted_at')
+                    ->groupBy('cur')->get();
+    }else if($request->searchby==4){
+      $getpid=DB::table('product_barcodes')->select('product_id')->where('barcode',$request->filter)->first();
+      
+      $stocks=Product::where('id',$getpid->product_id)->get();
+      $totalstock=DB::table('products')->select(DB::raw('sum(stock * costprice) as tstock,cur'))
+                    ->where('id',$getpid->product_id)
+                    ->whereNull('deleted_at')
+                    ->groupBy('cur')->get();
+      
+    }else if($request->searchby==3){
+      $stocks=Product::where('code',$request->filter)->get();
+      $totalstock=DB::table('products')->select(DB::raw('sum(stock * costprice) as tstock,cur'))
+                    ->where('code',$request->filter)
+                    ->whereNull('deleted_at')
+                    ->groupBy('cur')->get();
+    }else{
+      $stocks=Product::orderBy('category_id')->get();
+      $totalstock=DB::table('products')->select(DB::raw('sum(stock * costprice) as tstock,cur'))
+                        ->whereNull('deleted_at')
+                        ->groupBy('cur')->get();
+    }
+    
+        return view('stocks.stocklistprint',compact('stocks','totalstock','stockdate'));
+
+  }
+  public function searchmain2(Request $request)
+  {
+      $stocks=Product::orderBy('id')->get();
+      $totalstock=DB::table('products')->select(DB::raw('sum(stock * costprice) as tstock,cur'))
+                        ->whereNull('deleted_at')
+                        ->groupBy('cur')->get();
+      return view('stocks.stocklist2',compact('stocks','totalstock'));
+  }
+  public function printmainstock2(Request $request)
+  {
+      $stockdate=$request->dd;
+      $stocks=Product::orderBy('id')->get();
+      $totalstock=DB::table('products')->select(DB::raw('sum(stock * costprice) as tstock,cur'))
+                        ->whereNull('deleted_at')
+                        ->groupBy('cur')->get();
+      return view('stocks.stocklist2print',compact('stocks','totalstock','stockdate'));
+  }
 	public function search(Request $request)
 	{
 		$this->UpdateStockSearch($request);

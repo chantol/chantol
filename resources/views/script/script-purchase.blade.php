@@ -223,7 +223,7 @@
 				$('#invoice_items').empty();
 				$.each(data,function(i,inv){
 				
-				readinvdetail(i+1,inv.product_id,inv.barcode,inv.name,inv.qty,inv.unit,inv.qtycut,inv.quantity,inv.unitprice-0,inv.discount1,c_format(inv.amount-0,inv.cur),inv.cur_detail,inv.multiunit,inv.qtyunit,inv.submit,inv.focunit,inv.sunit);
+				readinvdetail(i+1,inv.product_id,inv.barcode,inv.name,inv.qty,inv.unit,inv.qtycut,inv.unitcut,inv.quantity,inv.unitprice-0,inv.discount1,c_format(inv.amount-0,inv.cur),inv.cur_detail,inv.multiunit,inv.qtyunit,inv.submit,inv.focunit,inv.sunit);
 				
 				})
 				appendtotal(c_format(data[0].subtotal-0,data[0].cur),c_format(data[0].shipcost-0,data[0].cur),data[0].discount,c_format(data[0].total-0,data[0].cur),data[0].cur,data[0].invnote);
@@ -293,7 +293,7 @@
 	    							$('#invoice_items').append(rowtotal);
 
 		}
-		function readinvdetail(nn,pid,barcode,name,qty1,unit,qty2,qty3,unitprice,discount,amount,cur,multi,qtyunit,submit,focunit,itemunit) {
+		function readinvdetail(nn,pid,barcode,name,qty1,unit,qty2,unit2,qty3,unitprice,discount,amount,cur,multi,qtyunit,submit,focunit,itemunit) {
 			var newrow='<tr>' +
 						'<td class="no" style="text-align:center;padding:7px 0px 0px 0px;">'+ nn +'</td>'+
 						
@@ -315,7 +315,7 @@
 						'<input type="text" class="form-control qty2 canenter" name="qty2[]" required style="border-style:none;padding:0px;text-align:center;width:70px;" value="'+ qty2 +'">'+
 						'</td>'+
 						'<td style="padding:0px;width:50px;">'+
-						'<input type="text" class="form-control unit2" name="unit2[]" required style="border-style:none;padding:0px;text-align:center;font-family:khmer os system;width:50px;" value="'+ unit +'">'+
+						'<input type="text" class="form-control unit2" name="unit2[]" required style="border-style:none;padding:0px;text-align:center;font-family:khmer os system;width:50px;" value="'+ unit2 +'">'+
 						'</td>'+
 
 						'<td style="padding:0px;width:70px;">'+
@@ -459,9 +459,9 @@
 				var lasttotal= t1 - amtdis ;
 				$('#lasttotal').val(lasttotal.formatMoney(decpl,',','.'));
 		  });
-		  $('tbody').delegate('.qty1,.qty2,.qty3,.unitprice,.discount','keyup',function(){
+		  $('tbody').delegate('.qty1,.qty2,.qty3,.unitprice,.discount,.unit2','keyup',function(){
 		  		var decpl=0;
-		  		
+		  		var qty3=0;
 				var tr=$(this).parent().parent();
 				var cur=tr.find('.cur1').val();
 				if(cur=="$"){
@@ -469,9 +469,15 @@
 				}
 				var qty1=tr.find('.qty1').val();
 				var qty2=tr.find('.qty2').val();
+				var unit2=tr.find('.unit2').val();
+				if(unit2=='%'){
+					qty3=qty1 - (qty1 * qty2)/100;
+				}else{
+					qty3=qty1-qty2;
+				}
 				//var multi=tr.find('.multi').val();
-				tr.find('.qty3').val(qty1-qty2);
-				var qty3=tr.find('.qty3').val();
+				tr.find('.qty3').val(qty3);
+				
 				var price=tr.find('.unitprice').val();
 				var dis=tr.find('.discount').val();
 				var amount=(qty3 * price) - (qty3 * price * dis)/100;

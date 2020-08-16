@@ -8,7 +8,7 @@
 				<td class="text-center" style="font-family:'Khmer Os System'">ថ្ងៃទី</td>
 				<td class="text-center" style="font-family:'Khmer Os System'">លេខកូដទំនិញ</td>
 				<td class="text-center" style="font-family:'Khmer Os System'">ឈ្មោះទំនិញ</td>
-				<td class="text-center" style="font-family:'Khmer Os System'">ចំនួនលក់(ឯកតារាយ)</td>
+				{{-- <td class="text-center" style="font-family:'Khmer Os System'">ចំនួនលក់(ឯកតារាយ)</td> --}}
 				<td class="text-center" style="font-family:'Khmer Os System'">សរុបចំនួនលក់</td>
 				<td class="text-center" style="font-family:'Khmer Os System'">មធ្យមតំលៃ</td>
 				<td class="text-center" style="font-family:'Khmer Os System'">សរុបទឹកប្រាក់</td>
@@ -59,11 +59,11 @@
 					@if ($pid<>$p->product_id)
 						
 						<tr style="font-family:khmer os system;border-style:solid;">
-							<td colspan=5>សរុបចំនួនលក់: {{ $pname }}</td>
+							<td colspan=4>សរុបចំនួនលក់: {{ $pname }}</td>
 							<td class="btn btn-default" style="margin:1px;color:red;width:99%;cursor:default;">
 								{{  App\Sale_Detail::convertqtysale($pid,$totalqty) }}
 							</td>
-							<td colspan=5>
+							<td colspan=6>
 									<span  style="font-size:18px;font-family:Arial;border-style:ridge;background-color:yellow;padding:5px;" title="Total Sold USD">{{ phpformatnumber($sub_usd,'$') }}$</span> 
 									<span  style="font-size:18px;font-family:Arial;border-style:ridge;background-color:yellow;padding:5px;" title="Total Sold THB">{{ phpformatnumber($sub_bat,'B') }}B</span> 
 									<span class="" style="font-size:18px;font-family:Arial;border-style:ridge;background-color:yellow;padding:5px;" title="Total Sold KHR">{{ phpformatnumber($sub_khr,'R') }}R</span> 
@@ -120,7 +120,7 @@
 					<td>{{ date('d-m-Y',strtotime($p->invdate)) }}</td>
 					<td>{{ $p->product_id }}</td>
 					<td style="font-family:khmer os system;">{{ $p->product->name }}</td>
-					<td style="font-family:khmer os system;text-align:center;">{{ $p->sumqty . '' . $p->product->itemunit}}</td>
+					{{-- <td style="font-family:khmer os system;text-align:center;">{{ $p->sumqty . '' . $p->product->itemunit}}</td> --}}
 					<td style="font-family:khmer os system;text-align:center;"><a href="{{ route('salereport.showdetail',[$p->product_id,$p->invdate,$supid]) }}" target="_blank()"> ​{{ App\Sale_Detail::convertqtysale($p->product_id,$p->sumqty) }}</a></td>
 					<td style="text-align:right;">{{ phpformatnumber($p->avgprice,$p->cur) . ' ' . $p->cur }}</td>
 					<td style="text-align:right;">{{ phpformatnumber($p->sumamount,$p->cur) . ' ' . $p->cur }}</td>
@@ -143,20 +143,20 @@
 			@endforeach
 			@if ($totalqty>0)
 				<tr style="font-family:khmer os system;background-color:#ddd;">
-					<td colspan=5>សរុបចំនួនលក់: {{ $pname }}</td>
-							<td class="btn btn-default" style="width:100%;margin-top:1px;color:red;">
-								{{  App\Sale_Detail::convertqtysale($pid,$totalqty) }}
-							</td>
-							<td colspan=5>
-								
-								<span  style="font-size:18px;font-family:Arial;border-style:ridge;background-color:yellow;padding:5px;" title="Total Sold USD">{{ phpformatnumber($sub_usd,'$') }}$</span> 
-								<span  style="font-size:18px;font-family:Arial;border-style:ridge;background-color:yellow;padding:5px;" title="Total Sold THB">{{ phpformatnumber($sub_bat,'B') }}B</span> 
-								<span class="" style="font-size:18px;font-family:Arial;border-style:ridge;background-color:yellow;padding:5px;" title="Total Sold KHR">{{ phpformatnumber($sub_khr,'R') }}R</span> 
-								
-								<span  style="font-size:18px;font-family:Arial;border-style:ridge;background-color:cyan;padding:5px;" title="Total Profit USD">{{ phpformatnumber($sub_pusd,'$') }}$</span> 
-								<span  style="font-size:18px;font-family:Arial;border-style:ridge;background-color:cyan;padding:5px;" title="Total Profit THB">{{ phpformatnumber($sub_pbat,'B') }}B</span> 
-								<span class="" style="font-size:18px;font-family:Arial;border-style:ridge;background-color:cyan;padding:5px;" title="Total Profit KHR">{{ phpformatnumber($sub_pkhr,'R') }}R</span> 
-							</td>
+					<td colspan=4>សរុបចំនួនលក់: {{ $pname }}</td>
+					<td class="btn btn-default" style="width:100%;margin-top:1px;color:red;">
+						{{  App\Sale_Detail::convertqtysale($pid,$totalqty) }}
+					</td>
+					<td colspan=6>
+						
+						<span  style="font-size:18px;font-family:Arial;border-style:ridge;background-color:yellow;padding:5px;" title="Total Sold USD">{{ phpformatnumber($sub_usd,'$') }}$</span> 
+						<span  style="font-size:18px;font-family:Arial;border-style:ridge;background-color:yellow;padding:5px;" title="Total Sold THB">{{ phpformatnumber($sub_bat,'B') }}B</span> 
+						<span class="" style="font-size:18px;font-family:Arial;border-style:ridge;background-color:yellow;padding:5px;" title="Total Sold KHR">{{ phpformatnumber($sub_khr,'R') }}R</span> 
+						
+						<span  style="font-size:18px;font-family:Arial;border-style:ridge;background-color:cyan;padding:5px;" title="Total Profit USD">{{ phpformatnumber($sub_pusd,'$') }}$</span> 
+						<span  style="font-size:18px;font-family:Arial;border-style:ridge;background-color:cyan;padding:5px;" title="Total Profit THB">{{ phpformatnumber($sub_pbat,'B') }}B</span> 
+						<span class="" style="font-size:18px;font-family:Arial;border-style:ridge;background-color:cyan;padding:5px;" title="Total Profit KHR">{{ phpformatnumber($sub_pkhr,'R') }}R</span> 
+					</td>
 				</tr>
 			@endif
 		</tbody>

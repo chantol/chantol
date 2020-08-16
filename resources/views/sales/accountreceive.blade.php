@@ -73,152 +73,190 @@
 
 @endsection
 @section('content')
+	<nav class="navbar navbar-inverse">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	     	<p style="font-size:22px;padding:5px;">Account Receiveable</p>
+	    </div>
+	    
+	    
+		<a href="{{ route('printallcustomerdebtinvoice') }}" class="btn btn-info navbar-btn" id="btnprintinvdebt" style="font-family:khmer os system;" target="_blank()">
+			ព្រីនវិក័យប័ត្រអ្នកជំពាក់ទាំងអស់
+		</a>
+	  </div>
+	</nav>
 
-	 <div class="panel panel-default">
-      <div class="panel-heading" style="background:blue;color:white;"><b>***Account Receive</b></div>
-      <div class="panel-body">
-      		<div class="row">
-				<div class="col-lg-2">
-		           <div class="row" style="margin-left:5px;margin-top:-10px;">
-		           		<p style="font-family:khmer os system;font-size:16px;">ឈ្មោះអតិថិជនដែលកំពុងជំពាក់</p>
-		               <table class="table table-hover table-bordered">
-		                   <thead>
-		                   		<tr>
-		                           <td colspan=2 style="padding:0px;">
-		                               <input type="text" id="customersearch" class="form-control autocomplete" style="font-family:khmer os system;height:40px;" placeholder="Search Customer" autocomplete="off">
-		                           </td>
-		                       </tr>
-		                        <tr style="text-align:center;"> 
-		                            <td>No</td>
-		                            <td>Customer Name</td>
-		                       </tr>
-		                   </thead>
-		                   <tbody id="customer">
-		                        @foreach ($customers as $key => $cus)
-		                            <tr>
-		                               <td style="width:auto;">{{ ++$key }}</td>
-		                               <td style="padding:0px;"><a href="#" class="btn btn-default cusname" style="height:40px;width:100%;text-align:left;font-family:khmer os content;padding-top:10px;" data-id="{{ $cus->supplier_id }}" data-cname="{{ $cus->supplier->name }}">{{ $cus->supplier->name }}</a></td>
-		                           </tr>
-		                        @endforeach
-		                   </tbody>
-		               </table>
-		           </div>
-		           
-		        </div>
-
-		         <!-- Image loader -->
-		        <div id="fade"></div>
-		        <div id="modal">
-		            <img id="loader" src="/logo/ajaxloading4.gif" />
-		        </div>
-				<div class="col-sm-10">
-					<div class="row">
-						<div class="col-lg-3">
-							<label for="customername">Customer Name</label>
-							<input type="text" class="form-control" name="customername" id="customername" style="height:40px;font-family:khmer os system;" readonly>
-							<input type="hidden" class="form-control" name="customerid" id="customerid">
-						</div>
-						
-						<div class="col-lg-2" id="startdate">
-							<label for="startdate">Start Date</label>
-							<div class="input-group">
-								<input type="text" name="start_date" id="start_date" class="form-control" style="height:40px;">
-								<div class="input-group-addon">
-									<span class="fa fa-calendar"></span>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-2" id="enddate">
-							<label for="enddate">End Date</label>
-							<div class="input-group">
-								<input type="text" name="end_date" id="end_date" class="form-control" style="height:40px;">
-								<div class="input-group-addon">
-									<span class="fa fa-calendar"></span>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-2">	
-							<label for="ckalldate" style="">
-		                    	<input type="checkbox" checked id="ckalldate" name="ckalldate">
-		                    	all Date
-		                    </label>   
-							<button class="btn btn-info btnsearchbydate" style="margin-top:0px;size:40px;display:block;">Search by Date</button>
-						</div>
+	
+	<div class="row" style="margin-left:-3px;">
+		   <!-- Image loader -->
+        <div id="fade"></div>
+        <div id="modal">
+            <img id="loader" src="/logo/ajaxloading4.gif" />
+        </div>
+		<div class="col-lg-3">
+			<div class="row">
+				<div class="panel panel-primary">
+					<div class="panel-heading" style="height:20px;">
+						<p style="font-family:khmer os system;">ឈ្មោះអតិថិជនដែលត្រូវទារ</p>
 					</div>
-					<br>
-					<d iv class="row">
-						<div class="col-md-12">
-				    		<div class="panel panel-default">
-				    			<div class="panel-heading">
-				    				<h3 class="panel-title" style="display:inline;"><strong>Invoice List</strong></h3>
-				    				<div class="custom-control custom-radio" style="float:right;display:inline;margin:5px;">
-									  <input type="radio" class="custom-control-input rad" id="radboth" name="grouprad" value="2">
-									  <label class="custom-control-label" for="radboth" id="forradboth" ><strong>Both</strong></label>
-									</div>
-									
-									<!-- Group of default radios - option 2 -->
-									<div class="custom-control custom-radio" style="float:right;display:inline;margin:5px;">
-									  <input type="radio" class="custom-control-input rad" id="radpaid" name="grouprad" value="1">
-									  <label class="custom-control-label" for="radpaid" id="forradpaid" style="color:blue;"><strong>Paid</strong></label>
-									</div>
-
-									<!-- Group of default radios - option 3 -->
-									<div class="custom-control custom-radio" style="float:right;display:inline;margin:5px;">
-									  <input type="radio" class="custom-control-input rad" id="radnotyetpaid" name="grouprad" checked value="0">
-									  <label class="custom-control-label" for="radnotyetpaid" id="forradnotyetpaid" style="color:red;"><strong>Not yet paid</strong></label>
-									</div>
-				    			</div>
-
-				    			<div class="panel-body" id="table_data">
-				    				@include('sales.s_invoice')
-				    			</div>
-				    			<div class="panel-footer">
-				    				<div class="row">
-					    				<div class="col-lg-2">
-					    					<div class="row">
-					    					<button class="btn btn-info" id="btnpaidnow" style="width:100px;margin-left:10px;">Paid</button>
-					    					</div>
-					    				</div>
-					    				<div class="col-lg-2">
-					    					<div class="row">
-					    					<h3 style="display:inline;">
-						    				<input type="checkbox" class="custom-control-input" style="height:20px;width:20px;" id="ckcheck">
-						    				Checked all
-						    				</h3>
-						    				</div>
-					    				</div>
-					    				<div class="col-lg-8">
-					    					<div class="row">
-					    					<span class="label label-info" id="tckusd" style="float:right;font-size:22px;margin-right:10px;">0$</span>
-						    				<span class="label label-info" id="tckbat" style="float:right;font-size:22px;margin-right:5px;margin-left:5px;">0B</span>
-						    				<span class="label label-info" id="tckkhr" style="float:right;font-size:22px;">0R</span>
-					    					</div>
-					    				</div>
-				    				</div>
-				    			</div>
-				    			<div class="panel-body" id="saledetail">
-				    				<div class="row">
-				    					<div class="col-lg-3">
-				    						 <label for="inv">Inv#: <span id="inv1" style="font-weight:bold;">0000</span></label> 
-				    					</div>
-				    					<div class="col-lg-6">
-				    						<label for="sup">Customer: <span id="sup1" style="font-weight:bold;">..........</span></label>
-				    					</div>
-				    					<div class="col-lg-3">
-				    						<label for="tt">Total: <span id="total1" style="font-weight:bold;">0</span></label>
-				    					</div>
-				    				</div>
-				    				@include('sales.s_invoice_detail')
-				    			</div>
-				    		</div>
-				    	</div>
+					<div class="panel-body">
+						<div class="table-responsive" style="overflow:auto;">
+							<table class="table table-hover table-bordered">
+				               <thead>
+				               		<tr>
+				                       <td colspan=2 style="padding:0px;">
+				                           <input type="text" id="customersearch" class="form-control autocomplete" style="font-family:khmer os system;height:40px;" placeholder="Search Customer" autocomplete="off">
+				                       </td>
+				                   </tr>
+				                    <tr style="text-align:center;"> 
+				                        <td>No</td>
+				                        <td>Customer Name</td>
+				                   </tr>
+				               </thead>
+				               <tbody id="customer">
+				                    @foreach ($customers as $key => $cus)
+				                        <tr>
+				                           <td style="width:auto;">{{ ++$key }}</td>
+				                           <td style="padding:0px;"><a href="#" class="btn btn-default cusname" style="height:40px;width:100%;text-align:left;font-family:khmer os content;padding-top:10px;" data-id="{{ $cus->supplier_id }}" data-cname="{{ $cus->supplier->name }}">{{ $cus->supplier->name }}</a></td>
+				                       </tr>
+				                    @endforeach
+				               </tbody>
+				           	</table>
+				        </div>
 					</div>
 				</div>
+			</div>
 		</div>
-	</div>				
+		{{-- ----------------------------------------- --}}
+		<div class="col-lg-9">
+				<div class="row" style="margin-left:1px;margin-right:1px;">
+					<div class="panel panel-info" style="overflow:auto;">
+						<div class="panel-heading" style="height:20px;">
+							<p style="font-family:khmer os system;">វិក័យប័ត្រជំពាក់</p>
+						</div>
+						<div class="panel-body">
+							<div class="col-lg-4">
+								<div class="row">
+									<label for="customername">Customer Name</label>
+									<input type="text" class="form-control" name="customername" id="customername" style="height:40px;font-family:khmer os system;" readonly>
+									<input type="hidden" class="form-control" name="customerid" id="customerid">
+								</div>
+							</div>
+							<div class="col-lg-3" id="startdate">
+								<label for="startdate">Start Date</label>
+								<div class="input-group">
+									<input type="text" name="start_date" id="start_date" class="form-control" style="height:40px;">
+									<div class="input-group-addon">
+										<span class="fa fa-calendar"></span>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-3" id="enddate">
+								<label for="enddate">End Date</label>
+								<div class="input-group">
+									<input type="text" name="end_date" id="end_date" class="form-control" style="height:40px;">
+									<div class="input-group-addon">
+										<span class="fa fa-calendar"></span>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-2">	
+								<label for="ckalldate" style="">
+			                    	<input type="checkbox" checked id="ckalldate" name="ckalldate">
+			                    	all Date
+			                    </label>   
+								<button class="btn btn-info btnsearchbydate" style="margin-top:0px;size:40px;display:block;">Search by Date</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" style="margin-top:-25px;">
+					<div class="col-lg-12">
+			    		<div class="panel panel-default">
+			    			<div class="panel-heading">
+			    				<h3 class="panel-title" style="display:inline;"><strong>Invoice List</strong></h3>
+			    				<div class="custom-control custom-radio" style="float:right;display:inline;margin:5px;">
+								  <input type="radio" class="custom-control-input rad" id="radboth" name="grouprad" value="2">
+								  <label class="custom-control-label" for="radboth" id="forradboth" ><strong>Both</strong></label>
+								</div>
+								
+								<!-- Group of default radios - option 2 -->
+								<div class="custom-control custom-radio" style="float:right;display:inline;margin:5px;">
+								  <input type="radio" class="custom-control-input rad" id="radpaid" name="grouprad" value="1">
+								  <label class="custom-control-label" for="radpaid" id="forradpaid" style="color:blue;"><strong>Paid</strong></label>
+								</div>
+
+								<!-- Group of default radios - option 3 -->
+								<div class="custom-control custom-radio" style="float:right;display:inline;margin:5px;">
+								  <input type="radio" class="custom-control-input rad" id="radnotyetpaid" name="grouprad" checked value="0">
+								  <label class="custom-control-label" for="radnotyetpaid" id="forradnotyetpaid" style="color:red;"><strong>Not yet paid</strong></label>
+								</div>
+			    			</div>
+
+			    			<div class="panel-body" id="table_data">
+			    				@include('sales.s_invoice')
+			    			</div>
+			    			<div class="panel-footer">
+			    				<div class="row">
+				    				<div class="col-lg-2">
+				    					<div class="row">
+				    					<button class="btn btn-info" id="btnpaidnow" style="width:100px;margin-left:10px;">Paid</button>
+				    					</div>
+				    				</div>
+				    				<div class="col-lg-2">
+				    					<div class="row">
+				    					<h3 style="display:inline;">
+					    				<input type="checkbox" class="custom-control-input" style="height:20px;width:20px;" id="ckcheck">
+					    				Checked all
+					    				</h3>
+					    				</div>
+				    				</div>
+				    				<div class="col-lg-8">
+				    					<div class="row">
+				    					<span class="label label-info" id="tckusd" style="float:right;font-size:22px;margin-right:10px;">0$</span>
+					    				<span class="label label-info" id="tckbat" style="float:right;font-size:22px;margin-right:5px;margin-left:5px;">0B</span>
+					    				<span class="label label-info" id="tckkhr" style="float:right;font-size:22px;">0R</span>
+				    					</div>
+				    				</div>
+			    				</div>
+			    			</div>
+			    			<div class="panel-body" id="saledetail">
+			    				<div class="row">
+			    					<div class="col-lg-3">
+			    						 <label for="inv">Inv#: <span id="inv1" style="font-weight:bold;">0000</span></label> 
+			    					</div>
+			    					<div class="col-lg-6">
+			    						<label for="sup">Customer: <span id="sup1" style="font-weight:bold;">..........</span></label>
+			    					</div>
+			    					<div class="col-lg-3">
+			    						<label for="tt">Total: <span id="total1" style="font-weight:bold;">0</span></label>
+			    					</div>
+			    				</div>
+			    				@include('sales.s_invoice_detail')
+			    			</div>
+			    		</div>
+			    	</div>
+				</div>
+		</div>
+	</div>
+		
+		
+		
+	
+	
+      	
+      		
+
+				
+
+		      
+				
+						
+							
 					
 	@include('sales.totalpaidlist_modal')
-	@include('sales.paidlist_modal')
+	@include('closelists.paidlist_modal')
 @endsection
 @section('script')
 	<script src="{{ asset('js') }}/numbertoword.js"></script>

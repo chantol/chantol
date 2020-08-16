@@ -245,9 +245,6 @@ class PurchaseController extends Controller
         }
     }
 
-
-  
-
     public function updatepurchase(Request $request)
     {
           //return($request->all());
@@ -314,6 +311,7 @@ class PurchaseController extends Controller
                                 'qty'=>$request->qty1[$key],
                                 'unit'=>$request->unit1[$key],
                                 'qtycut'=>$request->qty2[$key],
+                                'unitcut'=>$request->unit2[$key],
                                 'quantity'=>$request->qty3[$key],
                                 'unitprice'=>$request->unitprice[$key],
                                 'discount'=>$request->discount[$key],
@@ -322,7 +320,7 @@ class PurchaseController extends Controller
                                 'focunit'=>$request->focunit[$key],
                                 'sunit'=>$request->sunit[$key],
                                 'multiunit'=>$request->multi[$key],
-                                'qtyunit'=>(float)$request->qty3[$key]*(float)$request->multi[$key],
+                                'qtyunit'=>(float)$request->qty1[$key]*(float)$request->multi[$key],
                                 'submit'=>$request->submit[$key],
                                 'submitdate'=>$invdate,
                                 'invdiscount'=>$request->invdiscount,
@@ -406,6 +404,7 @@ class PurchaseController extends Controller
                                 'qty'=>$request->qty1[$key],
                                 'unit'=>$request->unit1[$key],
                                 'qtycut'=>$request->qty2[$key],
+                                'unitcut'=>$request->unit2[$key],
                                 'quantity'=>$request->qty3[$key],
                                 'unitprice'=>$request->unitprice[$key],
                                 'discount'=>$request->discount[$key],
@@ -414,7 +413,7 @@ class PurchaseController extends Controller
                                 'focunit'=>$request->focunit[$key],
                                 'sunit'=>$request->sunit[$key],
                                 'multiunit'=>$request->multi[$key],
-                                'qtyunit'=>(float)$request->qty3[$key]*(float)$request->multi[$key],
+                                'qtyunit'=>(float)$request->qty1[$key]*(float)$request->multi[$key],
                                 'submitdate'=>$invdate,
                                 'invdiscount'=>$request->invdiscount,
                                 'created_at'=>$current,

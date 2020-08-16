@@ -43,7 +43,45 @@
 			//     $('#message').hide();
 			//   }
 
-
+			$(document).on('change','#buyfrom',function(e){
+				var url="{{ route('getbuyinv') }}";
+				var sid=$(this).find(':selected').attr('data-id')
+				
+				$.get(url,{supid:sid},function(data){
+					//console.log(data)
+					$('#buyinv').find('option').remove();
+					$.each(data,function(i,item){
+						 $('#buyinv').append($('<option>', { 
+					        value: item.id,
+					        text : item.id 
+					    }));
+					 });
+					$('#buyinv').append($('<option>', { 
+					        value:"",
+					        text :""
+					    }));
+				})
+				totalbuyinv();
+			})
+			$(document).on('change','#buyinv',function(e){
+				totalbuyinv();
+				
+			})
+			function totalbuyinv() {
+				var url="{{ route('getbuyinvtotal') }}";
+				var buyinv=$('#buyinv').val();
+				$.get(url,{buyinv:buyinv},function(data){
+					//console.log(data)
+					if(!$.trim(data)){
+						$('#buytotal').val(0);
+						$('#buycur').val('');
+					}else{
+						$('#buytotal').val(data[0].total);
+						$('#buycur').val(data[0].cur);
+					}
+					
+				})
+			}
 			document.onkeyup = function(e) {
 				//alert(e.which)
 			  if (e.ctrlKey && e.which == 39) {
@@ -81,6 +119,34 @@
 					
 				})
 
+			})
+			 $(document).on('keydown','#customersearch',function(event){
+		    
+		    	if ( event.which == 13 ) 
+		    	{
+					event.preventDefault();
+					var query=$(this).val();
+					
+		     		searchcustomer(query);
+					$(this).focus();
+					$(this).val('');
+				}
+		    });
+			function searchcustomer(q) {
+				var url="{{ route('searchcustomermodal') }}";
+				$.get(url,{q:q},function(data){
+					$('#tbl_customersearch').empty().html(data);
+				})
+			}
+			$(document).on('click','#btnsearchcustomer',function(e){
+				e.preventDefault();
+				$('#searchcus_modal').modal('show');
+
+				$('#customersearch').val('');
+				
+			})
+			$('#searchcus_modal').on('shown.bs.modal', function () {
+  				$('#customersearch').focus()
 			})
 			$(document).on('click','#btnrereshcusprice',function(e){
 				e.preventDefault();
@@ -253,7 +319,7 @@
 				$('#totalweight').val(formatNumber(data[0].totalweight));
 				$('#totaldelivery').val(formatNumber(data[0].totaldelivery));
 				
-				$('#buyinv').val(padrightzero(data[0].buyinv,4));
+				
 				var invdate=new Date(data[0].invdate);
 				var dd = String(invdate.getDate()).padStart(2, '0');
 				var mm = String(invdate.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -278,12 +344,13 @@
 				var value3=data[0].buyfrom;
 				$('#buyfrom').val(value3);
 				$('#buyfrom').select2().trigger('change');
-				
-
+				//$('#buyinv').val(padrightzero(data[0].buyinv,4));
+				$('#buyinv').val(data[0].buyinv);
+				totalbuyinv();
 				$('#invoice_items').empty();
 				$.each(data,function(i,inv){
 				
-				readinvdetail(i+1,inv.product_id,inv.barcode,inv.name,inv.qty,inv.unit,inv.qtycut,inv.quantity,formatNumber(inv.unitprice-0),inv.discount1,formatNumber(inv.amount),inv.cur_detail,inv.multiunit,inv.qtyunit,inv.submit,inv.focunit,inv.sunit,inv.cost,inv.costcur);
+				readinvdetail(i+1,inv.product_id,inv.barcode,inv.name,inv.qty,inv.unit,inv.qtycut,inv.unitcut,inv.quantity,formatNumber(inv.unitprice-0),inv.discount1,formatNumber(inv.amount),inv.cur_detail,inv.multiunit,inv.qtyunit,inv.submit,inv.focunit,inv.sunit,inv.cost,inv.costcur);
 				
 					})
 				appendtotal(c_format(data[0].subtotal-0,data[0].cur),c_format(data[0].shipcost-0,data[0].cur),data[0].discount,c_format(data[0].total-0,data[0].cur),data[0].cur,data[0].invnote);
@@ -336,7 +403,7 @@
 	    							$('#invoice_items').append(rowtotal);
 
 		}
-		function readinvdetail(nn,pid,barcode,name,qty1,unit,qty2,qty3,unitprice,discount,amount,cur,multi,qtyunit,submit,focunit,itemunit,costprice,costcur) {
+		function readinvdetail(nn,pid,barcode,name,qty1,unit,qty2,unit2,qty3,unitprice,discount,amount,cur,multi,qtyunit,submit,focunit,itemunit,costprice,costcur) {
 			var newrow='<tr>' +
 						'<td class="no" style="text-align:center;padding:7px 0px 0px 0px;">'+ nn +'</td>'+
 						'<td style="padding:0px;width:100px;">'+
@@ -360,7 +427,7 @@
 						'<input type="text" class="form-control qty2 canenter" name="qty2[]" required style="border-style:none;padding:0px;text-align:center;width:70px;" value="'+ qty2 +'">'+
 						'</td>'+
 						'<td style="padding:0px;width:50px;">'+
-						'<input type="text" class="form-control unit2" name="unit2[]" required style="border-style:none;padding:0px;text-align:center;font-family:khmer os system;width:50px;" value="'+ unit +'">'+
+						'<input type="text" class="form-control unit2" name="unit2[]" required style="border-style:none;padding:0px;text-align:center;font-family:khmer os system;width:50px;" value="'+ unit2 +'">'+
 						'</td>'+
 
 						'<td style="padding:0px;width:70px;">'+
@@ -532,15 +599,22 @@
 				var lasttotal= t1 - amtdis ;
 				$('#lasttotal').val(lasttotal.formatMoney(decpl,',','.'));
 		  });
-		  $('tbody').delegate('.qty1,.qty2,.qty3,.unitprice,.discount','keyup',function(){
+		  $('tbody').delegate('.qty1,.qty2,.qty3,.unitprice,.discount,.unit2','keyup',function(){
 		  		var decpl=0;
+		  		var qty3=0;
 				var tr=$(this).parent().parent();
 				var cur=tr.find('.cur1').val();
 				var qty1=tr.find('.qty1').val();
 				var qty2=tr.find('.qty2').val();
+				var unit2=tr.find('.unit2').val();
+				if(unit2=='%'){
+					qty3=qty1 - (qty1 * qty2)/100;
+				}else{
+					qty3=qty1-qty2;
+				}
 				//var multi=tr.find('.multi').val();
-				tr.find('.qty3').val(qty1-qty2);
-				var qty3=tr.find('.qty3').val();
+				tr.find('.qty3').val(qty3);
+				
 				var price=tr.find('.unitprice').val().replace(/,/g,'');
 				var dis=tr.find('.discount').val();
 				var amount=(qty3 * price) - (qty3 * price * dis)/100;
@@ -661,6 +735,23 @@
 		          		}else{
 		          			price=pri;
 		          		}
+		          		var buyinv=$('#buyinv').val();
+		          		var cost=data.costprice;
+		          		var costcur=data.pcur;
+		          		if(buyinv !=''){
+		          			var url4="{{ route('getcostfrombuyinv') }}";
+		          			$.get(url4,{buyinv:buyinv,pid:data.product_id},function(data4){
+		          				if(!$.trim(data4)){
+
+		          				}else{
+		          					cost=data4[0].buycost;
+		          				 	costcur=data4[0].cur;
+		          				}
+		          				console.log(data4)
+		          				
+		          				
+		          			})
+		          		}
 		          		var newrow='<tr>' +
 						'<td class="no" style="text-align:center;padding:7px 0px 0px 0px;">1</td>'+
 						'<td style="padding:0px;width:100px;">'+
@@ -730,10 +821,10 @@
 						'<input type="text" class="form-control submit" name="submit[]" required style="border-style:none;width:80px;" value="0" readonly>'+
 						'</td>'+
 						'<td style="padding:0px;width:80px;">'+
-						'<input type="text" class="form-control costprice" name="costprice[]" required style="border-style:none;width:80px;" value="'+ formatNumber(data.costprice) +'" readonly>'+
+						'<input type="text" class="form-control costprice" name="costprice[]" required style="border-style:none;width:80px;" value="'+ formatNumber(cost) +'" readonly>'+
 						'</td>'+
 						'<td style="padding:0px;width:80px;">'+
-						'<input type="text" class="form-control costcur" name="costcur[]" required style="border-style:none;width:80px;" value="'+ data.pcur +'" readonly>'+
+						'<input type="text" class="form-control costcur" name="costcur[]" required style="border-style:none;width:80px;" value="'+ costcur +'" readonly>'+
 						'</td>'+
 						'<td style="text-align:center;padding:0px;">'+
 							'<a href="#" class="btn btn-warning btn-xs rowedit" style="color:blue;margin-top:5px;margin-right:5px;"><i class="fa fa-pencil"></i></a>'+
@@ -882,6 +973,15 @@
       	$(this).text('Added');
       })
 
+       $(document).on('click','#tbl-cus tbody tr',function(e){
+       		e.preventDefault();
+       		var row=$(this).closest('tr');
+       		var id=row.find('td:eq(1)').text();
+       		$('#sel_supplier').val(id);
+       		$('#sel_supplier').select2().trigger('change');
+       		$('#searchcus_modal').modal('hide');
+       })
+        
 
 
       //delete invoice

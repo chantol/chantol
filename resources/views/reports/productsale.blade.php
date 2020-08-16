@@ -57,17 +57,17 @@
 					@if ($ivdate<>$p->invdate)
 						
 						<tr style="font-family:khmer os system;background-color:#ddd;">
-							<td colspan=5>សរុបទឹកប្រាក់លក់សំរាប់ថ្ងៃទី:{{ date('d-m-Y',strtotime($ivdate)) }}</td>
+							<td colspan=4>សរុបទឹកប្រាក់លក់សំរាប់ថ្ងៃទី:{{ date('d-m-Y',strtotime($ivdate)) }}</td>
 							
-							<td colspan=6>
+							<td colspan=7>
 								
 								<span class="label label-info" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_usd,'$') }}$</span> 
 								<span class="label label-info" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_bat,'B') }}B</span> 
 								<span class="label label-info" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_khr,'R') }}R</span> 
 								
-								<span class="label label-primary" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_pusd,'$') }}$</span> 
-								<span class="label label-primary" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_pbat,'B') }}B</span> 
-								<span class="label label-primary" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_pkhr,'R') }}R</span> 
+								<span class="label label-primary" style="font-size:18px;font-family:Arial;float:right;">{{ phpformatnumber($sub_pusd,'$') }}$</span> 
+								<span class="label label-primary" style="font-size:18px;font-family:Arial;float:right;">{{ phpformatnumber($sub_pbat,'B') }}B</span> 
+								<span class="label label-primary" style="font-size:18px;font-family:Arial;float:right;">{{ phpformatnumber($sub_pkhr,'R') }}R</span> 
 							</td>
 						</tr>
 						
@@ -136,17 +136,17 @@
 					
 			@endforeach
 			<tr style="font-family:khmer os system;background-color:#ddd;">
-				<td colspan=5>សរុបទឹកប្រាក់លក់សំរាប់ថ្ងៃទី:{{ date('d-m-Y',strtotime($ivdate)) }}</td>
+				<td colspan=4>សរុបទឹកប្រាក់លក់សំរាប់ថ្ងៃទី:{{ date('d-m-Y',strtotime($ivdate)) }}</td>
 				
-				<td colspan=6>
+				<td colspan=7>
 					
 					<span class="label label-info" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_usd,'$') }}$</span> 
 					<span class="label label-info" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_bat,'B') }}B</span> 
 					<span class="label label-info" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_khr,'R') }}R</span> 
 					
-					<span class="label label-primary" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_pusd,'$') }}$</span> 
-					<span class="label label-primary" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_pbat,'B') }}B</span> 
-					<span class="label label-primary" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_pkhr,'R') }}R</span> 
+					<span class="label label-primary" style="font-size:18px;font-family:Arial;float:right;">{{ phpformatnumber($sub_pusd,'$') }}$</span> 
+					<span class="label label-primary" style="font-size:18px;font-family:Arial;float:right;">{{ phpformatnumber($sub_pbat,'B') }}B</span> 
+					<span class="label label-primary" style="font-size:18px;font-family:Arial;float:right;">{{ phpformatnumber($sub_pkhr,'R') }}R</span> 
 				</td>
 			</tr>
 		</tbody>

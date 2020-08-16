@@ -1,5 +1,5 @@
 
-<div class="table-responsive">
+<div class="table-responsive" style="overflow:auto;">
 	    					<table class="table table-bordered table-hover">
 	    						<thead>
 	                               <tr>

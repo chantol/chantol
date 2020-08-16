@@ -1,6 +1,41 @@
+@extends('layouts.master')
+@section('pagetitle')
+	Print multi Sold Invoice
+@endsection
+@section('css')
+	<style type="text/css" media="print">
+		  @page { size: a4 landscape;
+		  margin: 10mm 5mm 10mm 5mm;
+		   }
+		   div.pagebreak, div.appendix {
+    		page-break-after: always;}
 
+		  .tblright{
+		  	position:relative;
+		  	left:0px;
+		  }
+		  .footer {
+		   position: fixed;
+		   left: 0;
+		   bottom: 0;
+		   width: 100%;
+		   background-color: red;
+		   color: white;
+		   text-align: center;
+		}
+		table.a {
+		  table-layout: fixed;
+		  width: 100%;  
+		}
+		table.b{
+			width:100%;
+		}
+	</style>
+@endsection
+	@section('content')
 
-<div class="table-responsive" style="overflow:auto;">
+<div class="table-responsive" style="overflow:auto;" id="printarea">
+	<h3 style="font-family:khmer os system;">របាយការណ៌លក់គិតពី: {{ date('d-m-Y',strtotime($d1)) }} ដល់​ {{ date('d-m-Y',strtotime($d2)) }}</h3>
 	<table class="table table-bordered table-hover">
 		<thead>
            <tr>
@@ -8,7 +43,7 @@
 				<td class="text-center" style="font-family:'Khmer Os System'">ថ្ងៃទី</td>
 				<td class="text-center" style="font-family:'Khmer Os System'">លេខកូដទំនិញ</td>
 				<td class="text-center" style="font-family:'Khmer Os System'">ឈ្មោះទំនិញ</td>
-				<td class="text-center" style="font-family:'Khmer Os System'">ចំនួនលក់(ឯកតារាយ)</td>
+				
 				<td class="text-center" style="font-family:'Khmer Os System'">សរុបចំនួនលក់</td>
 				<td class="text-center" style="font-family:'Khmer Os System'">មធ្យមតំលៃ</td>
 				<td class="text-center" style="font-family:'Khmer Os System'">សរុបទឹកប្រាក់</td>
@@ -60,17 +95,17 @@
 					@if ($catid<>$p->product->category_id)
 						
 						<tr style="font-family:khmer os system;background-color:#ddd;">
-							<td colspan=5>សរុបទឹកប្រាក់លក់សំរាប់ក្រុមទំនិញ:{{ $catname }}</td>
+							<td colspan=4>សរុបទឹកប្រាក់លក់សំរាប់ក្រុមទំនិញ:{{ $catname }}</td>
 							
-							<td colspan=6>
+							<td colspan=7>
 								
 								<span class="label label-info" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_usd,'$') }}$</span> 
 								<span class="label label-info" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_bat,'B') }}B</span> 
 								<span class="label label-info" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_khr,'R') }}R</span> 
 								
-								<span class="label label-primary" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_pusd,'$') }}$</span> 
-								<span class="label label-primary" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_pbat,'B') }}B</span> 
-								<span class="label label-primary" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_pkhr,'R') }}R</span> 
+								<span class="label label-primary" style="font-size:18px;font-family:Arial;float:right;">{{ phpformatnumber($sub_pusd,'$') }}$</span> 
+								<span class="label label-primary" style="font-size:18px;font-family:Arial;float:right;">{{ phpformatnumber($sub_pbat,'B') }}B</span> 
+								<span class="label label-primary" style="font-size:18px;font-family:Arial;float:right;">{{ phpformatnumber($sub_pkhr,'R') }}R</span> 
 							</td>
 						</tr>
 						
@@ -122,9 +157,8 @@
 					<td>{{ date('d-m-Y',strtotime($p->invdate)) }}</td>
 					<td>{{ $p->product_id }}</td>
 					<td style="font-family:khmer os system;">{{ $p->product->name }}</td>
-					<td style="font-family:khmer os system;text-align:center;">{{ $p->sumqty . '' . $p->product->itemunit}}</td>
-					{{-- <td style="font-family:khmer os system;text-align:center;">{{ App\Sale_Detail::convertqtysale($p->product_id,$p->sumqty) }}</td> --}}
-					<td style="font-family:khmer os system;text-align:center;"><a href="{{ route('salereport.showdetail',[$p->product_id,$p->invdate,$supid]) }}" target="_blank()"> ​{{ App\Sale_Detail::convertqtysale($p->product_id,$p->sumqty) }}</a></td>
+					
+					<td style="font-family:khmer os system;text-align:center;"> ​{{ App\Sale_Detail::convertqtysale($p->product_id,$p->sumqty) }}</td>
 					<td style="text-align:right;">{{ phpformatnumber($p->avgprice,$p->cur) . ' ' . $p->cur }}</td>
 					<td style="text-align:right;">{{ phpformatnumber($p->sumamount,$p->cur) . ' ' . $p->cur }}</td>
 					<td style="text-align:center;font-family:khmer os system;">{{ App\Sale_Detail::convertqtysale($p->product_id,$p->focqty) }}</td>
@@ -145,28 +179,55 @@
 				
 			@endforeach
 			<tr style="font-family:khmer os system;background-color:#ddd;">
-				<td colspan=5>សរុបទឹកប្រាក់លក់សំរាប់ក្រុមទំនិញ:{{ $catname }}</td>
+				<td colspan=4>សរុបទឹកប្រាក់លក់សំរាប់ក្រុមទំនិញ:{{ $catname }}</td>
 				
-				<td colspan=6>
+				<td colspan=7>
 					
 					<span class="label label-info" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_usd,'$') }}$</span> 
 					<span class="label label-info" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_bat,'B') }}B</span> 
 					<span class="label label-info" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_khr,'R') }}R</span> 
 					
-					<span class="label label-primary" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_pusd,'$') }}$</span> 
-					<span class="label label-primary" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_pbat,'B') }}B</span> 
-					<span class="label label-primary" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($sub_pkhr,'R') }}R</span> 
+					<span class="label label-primary" style="font-size:18px;font-family:Arial;float:right;">{{ phpformatnumber($sub_pusd,'$') }}$</span> 
+					<span class="label label-primary" style="font-size:18px;font-family:Arial;float:right;">{{ phpformatnumber($sub_pbat,'B') }}B</span> 
+					<span class="label label-primary" style="font-size:18px;font-family:Arial;float:right;">{{ phpformatnumber($sub_pkhr,'R') }}R</span> 
 				</td>
 			</tr>
 		</tbody>
+		<tr style="font-family:khmer os system;">
+			<td colspan=4>សរុបទឹកប្រាក់លក់ទាំងអស់</td>
+			<td colspan=7>
+					
+					<span class="label label-info" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($tsusd,'$') }}$</span> 
+					<span class="label label-info" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($tsbat,'B') }}B</span> 
+					<span class="label label-info" style="font-size:18px;font-family:Arial;">{{ phpformatnumber($tskhr,'R') }}R</span> 
+					
+					<span class="label label-primary" style="font-size:18px;font-family:Arial;float:right;">{{ phpformatnumber($tpusd,'$') }}$</span> 
+					<span class="label label-primary" style="font-size:18px;font-family:Arial;float:right;">{{ phpformatnumber($tpbat,'B') }}B</span> 
+					<span class="label label-primary" style="font-size:18px;font-family:Arial;float:right;">{{ phpformatnumber($tpkhr,'R') }}R</span> 
+				</td>
+		</tr>
 	</table>
-	<input type="hidden" id="tskhr" value="{{ $tskhr }}">
-	<input type="hidden" id="tsbat" value="{{ $tsbat }}">
-	<input type="hidden" id="tsusd" value="{{ $tsusd }}">
-	<input type="hidden" id="tpkhr" value="{{ $tpkhr }}">
-	<input type="hidden" id="tpbat" value="{{ $tpbat }}">
-	<input type="hidden" id="tpusd" value="{{ $tpusd }}">
+	
 	
 </div>
-		
+@endsection	
 
+@section('script')
+
+	<script type="text/javascript">
+		
+			printContent('printarea');
+			function printContent(el)
+			{
+			
+			  //var restorpage=document.body.innerHTML;
+			  var printloc=document.getElementById(el).innerHTML;
+			  document.body.innerHTML=printloc;
+			  window.print();
+			  window.onafterprint = function(){ window.close()};
+			  //history.back(); 
+			  //document.body.innerTHML=restorpage;
+			  
+			}
+		</script>
+@endsection

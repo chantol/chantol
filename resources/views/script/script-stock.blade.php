@@ -123,6 +123,8 @@
 			})
 
 			$(document).on('click','#search_barcode',function(e){
+				$('#sby').val('4');
+				filter=$('#barcode').val();
 				$('#viewby').text('Item Barcode');
 				$('#printdate').text($('#dateshow').val());
 				var addr=$(location).attr('href');
@@ -140,6 +142,8 @@
 				})
 			})
 			$(document).on('click','#search_productcode',function(e){
+				$('#sby').val('3');
+				filter=$('#productcode').val();
 				$('#viewby').text('Item Code');
 				$('#printdate').text($('#dateshow').val());
 				var addr=$(location).attr('href');
@@ -156,6 +160,8 @@
 				})
 			})
 			$(document).on('click','#search_item',function(e){
+				$('#sby').val('2');
+				filter=$('#items').val();
 				$('#viewby').text('Item');
 				$('#printdate').text($('#dateshow').val());
 				var addr=$(location).attr('href');
@@ -173,6 +179,8 @@
 			})
 
 			$(document).on('click','#search_brand',function(e){
+				$('#sby').val('1');
+				filter=$('#brand').val();
 				$('#viewby').text('Brand:'+$("#brand option:selected").text());
 				$('#printdate').text($('#dateshow').val());
 				var addr=$(location).attr('href');
@@ -191,6 +199,8 @@
 			})
 
 			$(document).on('click','#search_category',function(e){
+				$('#sby').val('0');
+				filter=$('#category').val();
 				$('#viewby').text('Category:'+ $("#category option:selected").text());
 				$('#printdate').text($('#dateshow').val());
 				var addr=$(location).attr('href');
@@ -210,6 +220,7 @@
 
 			$(document).on('click','.btnsearchbydate',function(e){
 				e.preventDefault();
+				$('#sby').val('-1');
 				$('#viewby').text('Date');
 				$('#printdate').text($('#dateshow').val());
 				//$("body").css("cursor", "progress");
@@ -227,9 +238,51 @@
 					//$('#typesearch').attr('disabled',false);
 					//$("body").css("cursor", "default");
 					})
+			})
+			var filter='';
+			$(document).on('click','#btnprintstock',function(e){
+				e.preventDefault();
+				// $('.colaction').css('display','none');
+				// printContent('stockbody');
 
-					
-					
+				var htp=window.location.protocol;
+				var htn=window.location.hostname;
+				
+				var stockdate=$('#dateshow').val();
+				var sby=$('#sby').val();
+
+				
+				var redirectWindow = window.open(htp+'//'+htn+'/stock/mainstock/print?dd='+ stockdate+'&searchby='+sby+'&filter='+filter, '_blank');
+    			redirectWindow.location;
+			})
+			
+			$(document).on('click','#btnsearchbydate2',function(e){
+				e.preventDefault();
+				$('#viewby').text('Date');
+				$('#printdate').text($('#dateshow').val());
+				//$("body").css("cursor", "progress");
+				var addr=$(location).attr('href');
+				var n = addr.indexOf("info");
+				var choosedate=$('#dateshow').val();
+				if (n>0){
+					var url="{{ route('searchmainstock2') }}";
+				}else{
+					var url="{{ route('searchstock') }}";
+				}
+
+				$.get(url,{choosedate:choosedate},function(data){
+					$("#table_data").empty().html(data);
+					//$('#typesearch').attr('disabled',false);
+					//$("body").css("cursor", "default");
+					})
+			})
+			$(document).on('click','#btnprintstock2',function(e){
+				e.preventDefault();
+				var htp=window.location.protocol;
+				var htn=window.location.hostname;
+				var stockdate=$('#dateshow').val();
+				var redirectWindow = window.open(htp+'//'+htn+'/stock/mainstock2/print?dd='+ stockdate, '_blank');
+    			redirectWindow.location;
 			})
 			$(document).on('click','.btnviewstockproccess',function(e){
 				e.preventDefault();
@@ -386,31 +439,27 @@
 				
 			})
 
-		$(document).on('click','#btnprintstock',function(e){
-				e.preventDefault();
-				$('.colaction').css('display','none');
-				printContent('stockbody');
-			})
-		function printContent(el)
-		{
-			  var restorpage=document.body.innerHTML;
-			  var printloc=document.getElementById(el).innerHTML;
-			  document.body.innerHTML=printloc;
-			  window.print();
-			  document.body.innerHTML=restorpage;
-			  var today=new Date();
-			  $('.colaction').css('display','block');
-			$('#dateshow').datetimepicker({
-				timepicker:false,
-				datepicker:true,
-				//value:'13-03-2020',
-				value:today,
-				//format:'H:i',
-				format:'d-m-yy',
-				autoclose:true,
-				todayBtn:true,
-				startDate:today,
-			});
-		}
+		
+		// function printContent(el)
+		// {
+		// 	  var restorpage=document.body.innerHTML;
+		// 	  var printloc=document.getElementById(el).innerHTML;
+		// 	  document.body.innerHTML=printloc;
+		// 	  window.print();
+		// 	  document.body.innerHTML=restorpage;
+		// 	  var today=new Date();
+		// 	  $('.colaction').css('display','block');
+		// 	$('#dateshow').datetimepicker({
+		// 		timepicker:false,
+		// 		datepicker:true,
+		// 		//value:'13-03-2020',
+		// 		value:today,
+		// 		//format:'H:i',
+		// 		format:'d-m-yy',
+		// 		autoclose:true,
+		// 		todayBtn:true,
+		// 		startDate:today,
+		// 	});
+		// }
 	});
 </script>

@@ -9,6 +9,10 @@
 		  background-color: yellow;
 		  text-decoration:underline;
 		}
+		#btnsearchcustomer:hover {
+		  background-color: yellow;
+		  text-decoration:underline;
+		}
 		.invoice-title h2, .invoice-title h3 {
     		display: inline-block;
 		}
@@ -142,6 +146,8 @@
 	    					</td>
 	    					<td class="text-center">
 	    						<button style="color:green;border-width:1px;padding:5px;border-style:none;margin-top:5px;background-color:#ccc;" id="btnrereshcusprice">Refresh Customer Price</button>
+	    						<button style="color:green;border-width:1px;padding:5px;border-style:none;margin-top:5px;background-color:#ccc;" id="btnsearchcustomer">Search Customer</button>
+	    						
 	    					</td>
 	    				</tr>
 	    			</table>
@@ -157,7 +163,7 @@
 						<select class="form-control" class="form-control" name="buyfrom" id="buyfrom"​>
 							<option value=""></option>
 							@foreach ($buyfrom as $b)
-								<option value="{{ $b->name }}">{{ $b->name }}</option>
+								<option value="{{ $b->name }}" data-id="{{ $b->id }}">{{ $b->name }}</option>
 							@endforeach
 						</select>
 						
@@ -192,7 +198,9 @@
 				<div class="col-lg-3">
     				<label for="invno" class="kh">លេខវិក័យប័ត្រទិញ</label>
 					<div>
-						<input type="text" class="form-control"  name="buyinv" id="buyinv" style="font-family:'khmer os system';height:40px;width:100%;padding:5px;border-radius:5px;">
+						<input type="text" class="form-control"  name="buytotal" id="buytotal" style="font-family:'khmer os system';height:40px;width:100%;padding:5px;border-radius:5px;">
+						<input type="text" name="buycur" id="buycur" class="form-control">
+						<select name="buyinv" id="buyinv" class="form-control" style="height:40px;border-radius:5px;"></select>
 					</div>
 					<label for="cofee" class="kh">ថ្លៃរត់ច្បាប់</label>
 					<div>
@@ -375,6 +383,7 @@
 	@include('modal.tax_modal')
 	@include('modal.additem_modal')
 	@include('sales.confirm_delete')
+	@include('modal.searchcustomer_modal')
 @endsection
 @section('script')
 	<script src="{{ asset('js') }}/numberinput.js"></script>

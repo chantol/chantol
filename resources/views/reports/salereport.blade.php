@@ -95,10 +95,11 @@
 @endsection
 @section('content')
 
-	 <div class="panel panel-default">
-      <div class="panel-heading" style="background:blue;color:white;"><b>***Sale Report</b></div>
-      <div class="panel-body">
-      		<div class="row">
+	<div class="panel panel-default">
+     <div class="panel-heading" style="background:blue;color:white;"><b>***Sale Report</b></div>
+     	<div class="panel-body">
+      		<form action="{{ route('exportsalereport') }}" id="frmsalereport">
+      			<div class="row">
 					<div class="col-lg-12">
 						<div class="panel panel-body">
 							<div class="col-lg-2" id="startdate">
@@ -162,8 +163,9 @@
 			    				<div class="col-lg-6">
 			    					<h3 class="panel-title" style="font-family:khmer os system;" id="rptheader"><strong>របាយការណ៌លក់និងប្រាក់ចំណេញ</strong></h3>
 			    					<button class="btn btn-primary" id="btnprint">Print</button>
-									<button class="btn btn-success" style="color:black" id="btnexport">Export to Excel</button>
-									<a href="{{ route('export_excel.excel') }}" class="btn btn-success">Export to Excel</a>
+									{{-- <button class="btn btn-success" style="color:black" id="btnexport">Export to Excel</button> --}}
+									{{-- <a href="{{ route('exportsalereport') }}" class="btn btn-success">Export To Excel</a> --}}
+									<input type="submit" class="btn btn-info" value="Export XLSX.">
 			    				</div>
 			    				
 			    				<div class="col-lg-3">
@@ -229,10 +231,10 @@
 			    			
 			    		</div>
 			    	</div>
-	    	</div>
-
-      </div>
-
+	    		</div>
+			</form>
+      	</div>
+		
     </div>
 				
 	
@@ -398,7 +400,7 @@
 				var d1=$('#start_date').val();
 				var d2=$('#end_date').val();
 				$.get(url,{d1:d1,d2:d2,g1:g1,g2:g2},function(data){
-					$("#table_data").empty().html(data);
+					
 					setTimeout(function()
 			  		{
 						closeModal();

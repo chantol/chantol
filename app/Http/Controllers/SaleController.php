@@ -22,6 +22,41 @@ use App\Salecloselistpayment;
 use App\Company;
 class SaleController extends Controller
 {
+    public function getbuyinvtotal(Request $request)
+    {
+        $buytotal=DB::table('purchases')->select('total','cur')
+                                        ->where('id',$request->buyinv)
+                                        ->get();
+        return response($buytotal);
+    }
+    public function getcostfrombuyinv(Request $request)
+    {
+        $cost=DB::table('purchase_details')->select(DB::raw('(amount/qty) as buycost,cur'))
+                                            ->where('purchase_id',$request->buyinv)
+                                            ->where('product_id',$request->pid)
+                                            ->get();
+        return($cost);
+    }
+    public function getbuyinv(Request $request)
+    {
+        $buyinv=DB::table('purchases')->select('id')->where('supplier_id',$request->supid)->orderBy('id','DESC')->take(10)->get();
+        return response($buyinv);
+    }
+    public function printallcustomerdebtinvoice()
+    {
+        $invs=Sale::whereColumn('deposit','<','total')
+                    ->where('close','0')
+                    ->orderBy('supplier_id')
+                    ->orderBy('id')
+                    ->get();
+        $totalall=DB::table('sales')
+                    ->select(DB::raw('sum(total-deposit) as tdebt,cur'))
+                    ->where('close','0')
+                    ->whereColumn('deposit','<','total')
+                    ->groupBy('cur')
+                    ->get();
+        return view('sales.alldebtinv',compact('invs','totalall'));
+    }
     public function getcusvalue(Request $request)
     {
         $cus=Supplier::where('id',$request->id)->first();
@@ -343,6 +378,22 @@ class SaleController extends Controller
         return view('sales.searchcusname',compact('customers'));
        
        
+    }
+    public function searchcustomermodal(Request $request)
+    {
+        $search=$request->q;
+        $customers=DB::table('suppliers')
+                    ->where('type',1)
+                    ->where(function($query) use($search){
+                        $query->Where('name_slug','like','%'. $search.'%')
+                                ->orWhere('tel','like','%'. $search.'%')
+                                ->orWhere('customercode','like','%'. $search.'%');
+                    })
+                    ->get();
+                    
+        return view('modal.customersearch_modal',compact('customers'));
+
+
     }
      public function invoicelistsearchpaid(Request $request)
     {
@@ -689,12 +740,12 @@ class SaleController extends Controller
             $p->user_id=$request->userid;
             $p->supplier_id=$request->sel_supplier;
             $p->delivery_id=$request->sel_delivery;
-
-            if($request->buyinv !='null'){
-                $p->buyinv=$request->buyinv;
-            }
-            
+            $p->buyinv=$request->buyinv;
             $p->buyfrom=$request->buyfrom;
+             if($request->buyinv <> ''){
+                $totalbuyex=$this->exchange($request->buycur,$request->lastcur,str_replace(',','',$request->buytotal));
+                $p->totalcost=$totalbuyex;
+            }
             $p->carfee=str_replace(',','',$request->carfee);
             $p->totalweight=str_replace(',','',$request->totalweight);
             $p->totaldelivery=str_replace(',','',$request->totaldelivery);
@@ -741,6 +792,7 @@ class SaleController extends Controller
                                 'qty'=>$request->qty1[$key],
                                 'unit'=>$request->unit1[$key],
                                 'qtycut'=>$request->qty2[$key],
+                                'unitcut'=>$request->unit2[$key],
                                 'quantity'=>$request->qty3[$key],
                                 'unitprice'=>str_replace(',','',$request->unitprice[$key]),
                                 'discount'=>$request->discount[$key],
@@ -749,7 +801,7 @@ class SaleController extends Controller
                                 'focunit'=>$request->focunit[$key],
                                 'sunit'=>$request->sunit[$key],
                                 'multiunit'=>$request->multi[$key],
-                                'qtyunit'=>(float)$request->qty3[$key]*(float)$request->multi[$key],
+                                'qtyunit'=>(float)$request->qty1[$key]*(float)$request->multi[$key],
                                 'submit'=>$request->submit[$key],
                                 'cost'=>$request->costprice[$key],
                                 'costcur'=>$request->costcur[$key],
@@ -786,8 +838,12 @@ class SaleController extends Controller
         $invdate= date('Y-m-d', strtotime($date));
         $bal=str_replace(',','',$request->lasttotal);
         $dep=str_replace(',','',$request->deposit);
+        if($bal==0){
+            $psp=0;
+        }else{
+            $psp=floor(((float)$dep/(float)$bal)*100);
+        }
         
-        $psp=floor(((float)$dep/(float)$bal)*100);
         if ($validator->passes()) {
             $current = Carbon::now();
             $current->timezone('Asia/Phnom_Penh');
@@ -798,6 +854,11 @@ class SaleController extends Controller
             $p->delivery_id=$request->sel_delivery;
             $p->buyinv=$request->buyinv;
             $p->buyfrom=$request->buyfrom;
+            if($request->buyinv <> ''){
+                $totalbuyex=$this->exchange($request->buycur,$request->lastcur,str_replace(',','',$request->buytotal));
+                $p->totalcost=$totalbuyex;
+            }
+            
             $p->carfee=str_replace(',','',$request->carfee);
             $p->totalweight=str_replace(',','',$request->totalweight);
             $p->totaldelivery=str_replace(',','',$request->totaldelivery);
@@ -841,14 +902,17 @@ class SaleController extends Controller
                 //                 'updated_at'=>$current);
                 //     Sale_Detail::insert($data);
                 //     }
+                //$totalcost=0;
                 $countrow=count($request->productid)-1;
                 for($key=$countrow;$key>=0;$key--){
+                     //$totalcost += $request->qty1[$key] * $request->costprice[$key];
                      $data=array('sale_id'=>$id,
                                 'product_id'=>$request->productid[$key],
                                 'barcode'=>$request->barcode[$key],
                                 'qty'=>$request->qty1[$key],
                                 'unit'=>$request->unit1[$key],
                                 'qtycut'=>$request->qty2[$key],
+                                'unitcut'=>$request->unit2[$key],
                                 'quantity'=>$request->qty3[$key],
                                 'unitprice'=>str_replace(',','',$request->unitprice[$key]),
                                 'discount'=>$request->discount[$key],
@@ -857,7 +921,7 @@ class SaleController extends Controller
                                 'focunit'=>$request->focunit[$key],
                                 'sunit'=>$request->sunit[$key],
                                 'multiunit'=>$request->multi[$key],
-                                'qtyunit'=>(float)$request->qty3[$key]*(float)$request->multi[$key],
+                                'qtyunit'=>(float)$request->qty1[$key]*(float)$request->multi[$key],
                                 'cost'=>str_replace(',','',$request->costprice[$key]),
                                 'costcur'=>$request->costcur[$key],
                                 'costex'=>$this->exchange($request->costcur[$key],$request->cur1[$key],str_replace(',','',$request->costprice[$key])),
@@ -877,6 +941,10 @@ class SaleController extends Controller
                     $spm->save();
 
                 }
+                // if($request->buyinv==''){
+                //     $tcostexc=$this->exchange($request->costcur[$key],$request->lastcur,str_replace(',','',$totalcost));
+                //     DB::table('sales')->where('id',$id)->update(['totalcost'=>$tcostexc]);
+                // }
             }
             return response()->json(['success'=>'Save Sale Completed.']);
         }
